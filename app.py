@@ -36,3 +36,5 @@ def submit():
 
 if __name__ == "__main__":
     app.run(port=5002, debug=True)
+
+#python3 -m pip freeze > requirements.txt
