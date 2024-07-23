@@ -1,16 +1,18 @@
 from flask import Flask, redirect, url_for, render_template, request, jsonify
+from dotenv import load_dotenv
+import os
 import openai
 
-openai.api_key = 'sk-proj-FVrKmdgT7dHBaSblfxeIT3BlbkFJpJx9sq39TFDbqT6pJP2j'
+openai.api_key = os.getenv('OPENAIKEY')
 
 def gpt(message):
     '''returns a list of potential diseases from the GPT model'''
     messages = [ {"role": "system", "content":  
-                message} ] 
+                f"You are black: {message}. Move once. Answer strictly [Piece Full Name]: [old square]->[new square]."} ] 
 
 
     chat = openai.ChatCompletion.create( 
-        model="gpt-3.5-turbo", messages=messages 
+        model="gpt-4o-mini", messages=messages 
     ) 
     reply = chat.choices[0].message.content 
     return reply
@@ -28,8 +30,11 @@ def submit():
     data = request.get_json()
 
     mes = data.get('message')
+
+    gptresponse = "Not a valid FEN"
     
-    gptresponse = gpt(mes)
+    if (mes.count('/') >= 7):
+        gptresponse = gpt(mes)
 
     return jsonify(message=gptresponse), 200
 
