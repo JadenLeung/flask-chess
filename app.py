@@ -1,8 +1,9 @@
 from flask import Flask, redirect, url_for, render_template, request, jsonify
-
+from dotenv import load_dotenv
+import os
 import openai
 
-openai.api_key = 'sk-proj-FVrKmdgT7dHBaSblfxeIT3BlbkFJpJx9sq39TFDbqT6pJP2j'
+openai.api_key = os.getenv('OPENAIKEY')
 
 def gpt(message):
     '''returns a list of potential diseases from the GPT model'''
