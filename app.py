@@ -36,7 +36,7 @@ def submit():
     if (mes.count('/') >= 7):
         gptresponse = gpt(mes)
 
-    return jsonify(message=gptresponse), 200
+    return gptresponse, 200
 
 
 if __name__ == "__main__":
