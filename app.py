@@ -8,7 +8,7 @@ openai.api_key = os.getenv('OPENAIKEY')
 def gpt(message):
     '''returns a list of potential diseases from the GPT model'''
     messages = [ {"role": "system", "content":  
-                f"You are black: {message}. Move once. Answer strictly [Piece Full Name]: [old square]->[new square]."} ] 
+                f"You are black: {message}. Move once. Answer strictly [Piece Full Name]: [old square]->[new square]. When answering, make sure the piece does exist in that old square given the position."} ] 
 
 
     chat = openai.ChatCompletion.create( 
@@ -21,7 +21,7 @@ app = Flask(__name__)
 
 @app.route('/')
 def home():
-    return "Hello world: 2"
+    return "Hello world: 4"
     #return render_template('index.html')
 
 
