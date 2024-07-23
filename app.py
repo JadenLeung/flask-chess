@@ -8,7 +8,7 @@ openai.api_key = os.getenv('OPENAIKEY')
 def gpt(message):
     '''returns a list of potential diseases from the GPT model'''
     messages = [ {"role": "system", "content":  
-                f"You are black: {message}. Move once. Answer strictly [Piece Full Name]: [old square]->[new square]. When answering, make sure the piece does exist in that old square given the position."} ] 
+                f" You are a very strong chess engine. The chess board is in the following state (FEN): 'r1bqkbnr/pppp1ppp/2n5/1B6/8/2N1P3/PPP2PPP/R1BQK1NR'. What is the best move for black? Answer strictly in the form [Piece name]: [Old square]->[New square]"} ] 
 
 
     chat = openai.ChatCompletion.create( 
@@ -21,7 +21,7 @@ app = Flask(__name__)
 
 @app.route('/')
 def home():
-    return "Hello world: 4"
+    return "Hello world: 5"
     #return render_template('index.html')
 
 
