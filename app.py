@@ -1,9 +1,8 @@
 from flask import Flask, redirect, url_for, render_template, request, jsonify
-from dotenv import load_dotenv
-import os
+
 import openai
 
-openai.api_key = os.getenv('OPENAIKEY')
+openai.api_key = 'sk-proj-FVrKmdgT7dHBaSblfxeIT3BlbkFJpJx9sq39TFDbqT6pJP2j'
 
 def gpt(message):
     '''returns a list of potential diseases from the GPT model'''
@@ -21,7 +20,7 @@ app = Flask(__name__)
 
 @app.route('/')
 def home():
-    return "Hello world: 1"
+    return "Hello world: 2"
     #return render_template('index.html')
 
 
