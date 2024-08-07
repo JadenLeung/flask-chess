@@ -6,10 +6,9 @@ import openai
 openai.api_key = os.getenv('OPENAIKEY')
 
 def gpt(message):
-    '''returns a list of potential diseases from the GPT model'''
     messages = [ {"role": "system", "content":  
-                f" It's your turn as black. Which move will come next? (FEN): rnbqkbnr/pppp1ppp/8/4p3/4P3/8/PPPP1PPP/RNBQKBNR'{message}'. Answer strictly in the form [Piece name]: [Old square]->[New square]"} ] 
-
+                # f"It's your turn as black. Which move will come next? (FEN): {message}'. Answer strictly in the form [Piece name]: [Old square]->[New square]"} ] 
+                message} ] 
 
     chat = openai.ChatCompletion.create( 
         model="gpt-4o-mini", messages=messages 
