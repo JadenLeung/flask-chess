@@ -2,8 +2,11 @@ from flask import Flask, redirect, url_for, render_template, request, jsonify
 from dotenv import load_dotenv
 import os
 import openai
+import google.generativeai as genai
+
 
 openai.api_key = os.getenv('OPENAIKEY')
+genai.configure(api_key=os.getenv('GEMINIKEY'))
 
 def gpt(message, mod):
     messages = [ {"role": "system", "content":  
@@ -17,11 +20,19 @@ def gpt(message, mod):
     reply = chat.choices[0].message.content 
     return reply
 
+def gemini(message):
+    model = genai.GenerativeModel(model_name="gemini-1.5-flash")
+    response = model.generate_content([message])
+    print(response.text)
+    return response.text
+
+
+
 app = Flask(__name__)
 
 @app.route('/')
 def home():
-    return "Hello world: 6"
+    return "Hello world: 7"
     #return render_template('index.html')
 
 
@@ -32,12 +43,15 @@ def submit():
     mes = data.get('message')
     mod = data.get('model')
 
-    gptresponse = "Not a valid FEN"
+    response = "Not a valid FEN"
     
     if (mes.count('/') >= 7):
-        gptresponse = gpt(mes, mod)
+        if (mod == 'gemini'):
+            response = gemini(mes)
+        else:
+            response = gpt(mes, mod)
 
-    return gptresponse, 200
+    return response, 200
 
 
 if __name__ == "__main__":
