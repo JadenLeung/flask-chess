@@ -3,10 +3,12 @@ from dotenv import load_dotenv
 import os
 import openai
 import google.generativeai as genai
+from google.generativeai.types import HarmCategory, HarmBlockThreshold
 
 
 openai.api_key = os.getenv('OPENAIKEY')
 genai.configure(api_key=os.getenv('GEMINIKEY'))
+
 
 def gpt(message, mod):
     messages = [ {"role": "system", "content":  
@@ -22,7 +24,14 @@ def gpt(message, mod):
 
 def gemini(message):
     model = genai.GenerativeModel(model_name="gemini-1.5-flash")
-    response = model.generate_content([message])
+    
+    response = model.generate_content([message],
+    safety_settings={
+        HarmCategory.HARM_CATEGORY_HATE_SPEECH: HarmBlockThreshold.BLOCK_NONE,
+        HarmCategory.HARM_CATEGORY_HARASSMENT: HarmBlockThreshold.BLOCK_NONE,
+    })
+
+
     print(response.text)
     return response.text
 
