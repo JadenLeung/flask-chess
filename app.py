@@ -48,7 +48,7 @@ def home():
 def submit():
     data = request.get_json()
 
-    mes = data.get('message')
+    mes = data.get('fen')
     mod = data.get('model')
     color = data.get('color')
     prev = data.get('prev')
