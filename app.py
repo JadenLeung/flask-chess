@@ -5,15 +5,14 @@ import openai
 import google.generativeai as genai
 from google.generativeai.types import HarmCategory, HarmBlockThreshold
 
-
+   
 openai.api_key = os.getenv('OPENAIKEY')
 genai.configure(api_key=os.getenv('GEMINIKEY'))
 
 
-def gpt(message, mod):
+def gpt(message, mod, color, prev):
     messages = [ {"role": "system", "content":  
-                # f"It's your turn as black. Which move will come next? (FEN): {message}'. Answer strictly in the form [Piece name]: [Old square]->[New square]"} ] 
-                message} ] 
+                f"It's your turn as {color}. (Previous Moves): {prev}, (FEN): {message}. Without giving explanations, please state the best 5 moves for {color}, each in a new line."} ] 
 
     chat = openai.ChatCompletion.create( 
        # model="gpt-4o-mini", messages=messages
@@ -22,10 +21,11 @@ def gpt(message, mod):
     reply = chat.choices[0].message.content 
     return reply
 
-def gemini(message):
+def gemini(message, color, prev):
     model = genai.GenerativeModel(model_name="gemini-1.5-flash")
     
-    response = model.generate_content([message],
+    response = model.generate_content([
+        f"It's your turn as {color}. (Previous Moves): {prev}, (FEN): {message}. Without giving explanations, please state the best 5 moves for {color}, each in a new line."],
     safety_settings={
         HarmCategory.HARM_CATEGORY_HATE_SPEECH: HarmBlockThreshold.BLOCK_NONE,
         HarmCategory.HARM_CATEGORY_HARASSMENT: HarmBlockThreshold.BLOCK_NONE,
@@ -36,12 +36,11 @@ def gemini(message):
     return response.text
 
 
-
 app = Flask(__name__)
 
 @app.route('/')
 def home():
-    return "Hello world: 7"
+    return "whatsup1"
     #return render_template('index.html')
 
 
@@ -51,14 +50,19 @@ def submit():
 
     mes = data.get('message')
     mod = data.get('model')
+    color = data.get('color')
+    prev = data.get('prev')
+
 
     response = "Not a valid FEN"
     
     if (mes.count('/') >= 7):
         if (mod == 'gemini'):
-            response = gemini(mes)
+            response = gemini(mes, color, prev)
+        elif (mod == 'stockfish'):
+            response = stockfish(mes)
         else:
-            response = gpt(mes, mod)
+            response = gpt(mes, mod, color, prev)
 
     return response, 200
 
