@@ -59,8 +59,10 @@ def submit():
     if (mes.count('/') >= 7):
         if (mod == 'gemini'):
             response = gemini(mes, color, prev)
-        else:
+        elif (mod == 'gpt-4o-mini'):
             response = gpt(mes, mod, color, prev)
+        else:
+            response = "Invalid model, only gemini and gpt-4o-mini accepted"
 
     return response, 200
 
