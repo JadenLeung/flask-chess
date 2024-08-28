@@ -59,8 +59,6 @@ def submit():
     if (mes.count('/') >= 7):
         if (mod == 'gemini'):
             response = gemini(mes, color, prev)
-        elif (mod == 'stockfish'):
-            response = stockfish(mes)
         else:
             response = gpt(mes, mod, color, prev)
 
