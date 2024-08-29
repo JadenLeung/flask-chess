@@ -1,5 +1,6 @@
 from flask import Flask, redirect, url_for, render_template, request, jsonify
 from dotenv import load_dotenv
+from flask_cors import CORS
 import os
 import openai
 import google.generativeai as genai
@@ -37,6 +38,7 @@ def gemini(message, color, prev):
 
 
 app = Flask(__name__)
+CORS(app)
 
 @app.route('/')
 def home():
