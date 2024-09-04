@@ -42,7 +42,7 @@ CORS(app)
 
 @app.route('/')
 def home():
-    return "whatsup1"
+    return "whatsup2"
     #return render_template('index.html')
 
 
