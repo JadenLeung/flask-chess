@@ -5,10 +5,15 @@ import os
 import openai
 import google.generativeai as genai
 from google.generativeai.types import HarmCategory, HarmBlockThreshold
+from pymongo import MongoClient
 
    
 openai.api_key = os.getenv('OPENAIKEY')
 genai.configure(api_key=os.getenv('GEMINIKEY'))
+
+client = MongoClient(os.getenv('mongouri'))
+db = client.db  # Replace 'your_database_name' with your database name
+collection = db.test  # Replace 'your_collection_name' with your collection name
 
 
 def gpt(message, mod, color, prev):
@@ -68,6 +73,11 @@ def submit():
 
     return response, 200
 
+
+@app.route('/data', methods=['GET'])
+def get_data():
+    data = list(collection.find({}, {'_id': 0}))  # Exclude '_id' from the result
+    return jsonify(data)
 
 if __name__ == "__main__":
     app.run(port=5002, debug=True)
