@@ -13,7 +13,7 @@ genai.configure(api_key=os.getenv('GEMINIKEY'))
 
 client = MongoClient(os.getenv('mongouri'))
 db = client.db  # Replace 'your_database_name' with your database name
-collection = db.test  # Replace 'your_collection_name' with your collection name
+collection = db.data  # Replace 'your_collection_name' with your collection name
 
 
 def gpt(message, mod, color, prev):
@@ -78,6 +78,16 @@ def submit():
 def get_data():
     data = list(collection.find({}, {'_id': 0}))  # Exclude '_id' from the result
     return jsonify(data)
+
+
+@app.route('/insert', methods=['POST'])
+def insert_data():
+    try:
+        data = request.get_json()
+        insert_result = collection.insert_one(data)
+        return jsonify({'message': 'Data inserted successfully', 'inserted_id': str(insert_result.inserted_id)}), 201
+    except Exception as e:
+        return jsonify({'error': str(e)}), 400
 
 if __name__ == "__main__":
     app.run(port=5002, debug=True)
