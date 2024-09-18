@@ -6,14 +6,14 @@ import openai
 import google.generativeai as genai
 from google.generativeai.types import HarmCategory, HarmBlockThreshold
 from pymongo import MongoClient
-from stockfish import Stockfish
+# from stockfish import Stockfish
 
    
 openai.api_key = os.getenv('OPENAIKEY')
 genai.configure(api_key=os.getenv('GEMINIKEY'))
 
-stockfish_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'stockfish')
-stockfish = Stockfish(path=stockfish_path)
+# stockfish_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'stockfish')
+# stockfish = Stockfish(path=stockfish_path)
 
 client = MongoClient(os.getenv('mongouri'))
 db = client.db  # Replace 'your_database_name' with your database name
@@ -83,32 +83,32 @@ def get_data():
     data = list(collection.find({}, {'_id': 0}))  # Exclude '_id' from the result
     return jsonify(data)
 
-@app.route('/move', methods=['GET'])
-def get_best_move():
-    fen = request.args.get('fen')
-    time = request.args.get('time')
-    if fen:
-        stockfish.set_fen_position(fen)
-        best_move = stockfish.get_best_move_time(time)
-        return jsonify({
-            'best_move': best_move
-        })
-    return jsonify({'error': 'FEN parameter is required'}), 400
+# @app.route('/move', methods=['GET'])
+# def get_best_move():
+#     fen = request.args.get('fen')
+#     time = request.args.get('time')
+#     if fen:
+#         stockfish.set_fen_position(fen)
+#         best_move = stockfish.get_best_move_time(time)
+#         return jsonify({
+#             'best_move': best_move
+#         })
+#     return jsonify({'error': 'FEN parameter is required'}), 400
 
-@app.route('/eval', methods=['GET'])
-def get_eval_move():
-    fen = request.args.get('fen')
-    if fen:
-        stockfish.set_fen_position(fen)
-        evaluation = stockfish.get_evaluation()  # Get the evaluation score
-        evaluation_pawns = evaluation['value'] / 100 if evaluation['type'] == 'cp' else evaluation['value']
-        return jsonify({
-            'evaluation': {
-                'type': evaluation['type'],
-                'value': evaluation_pawns
-            }
-        })
-    return jsonify({'error': 'FEN parameter is required'}), 400
+# @app.route('/eval', methods=['GET'])
+# def get_eval_move():
+#     fen = request.args.get('fen')
+#     if fen:
+#         stockfish.set_fen_position(fen)
+#         evaluation = stockfish.get_evaluation()  # Get the evaluation score
+#         evaluation_pawns = evaluation['value'] / 100 if evaluation['type'] == 'cp' else evaluation['value']
+#         return jsonify({
+#             'evaluation': {
+#                 'type': evaluation['type'],
+#                 'value': evaluation_pawns
+#             }
+#         })
+#     return jsonify({'error': 'FEN parameter is required'}), 400
 
 
 
