@@ -12,7 +12,7 @@ from stockfish import Stockfish
 openai.api_key = os.getenv('OPENAIKEY')
 genai.configure(api_key=os.getenv('GEMINIKEY'))
 
-stockfish_path = os.path.join(os.path.dirname(__file__), 'stockfish')
+stockfish_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'stockfish')
 stockfish = Stockfish(path=stockfish_path)
 
 client = MongoClient(os.getenv('mongouri'))
