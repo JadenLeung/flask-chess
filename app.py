@@ -32,7 +32,7 @@ def gpt(message, mod, color, prev):
     return reply
 
 def gemini(message, color, prev):
-    model = genai.GenerativeModel(model_name="gemini-2.0-flash")
+    model = genai.GenerativeModel(model_name="gemini-1.5-flash")
     
     response = model.generate_content([
         f"It's your turn as {color}. (Previous Moves): {prev}, (FEN): {message}. Without giving explanations, please state the best 5 moves for {color}, each in a new line."],
