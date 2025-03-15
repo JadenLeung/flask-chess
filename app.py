@@ -6,7 +6,7 @@ import openai
 import google.generativeai as genai
 from google.generativeai.types import HarmCategory, HarmBlockThreshold
 from pymongo import MongoClient
-from stockfish import Stockfish
+# from stockfish import Stockfish
 
    
 openai.api_key = os.getenv('OPENAIKEY')
@@ -45,26 +45,6 @@ def gemini(message, color, prev):
     print(response.text)
     return response.text
 
-def deepseek(message, mod, color, prev):
-    client = openai(
-        base_url="https://openrouter.ai/api/v1",
-        api_key=os.getenv('DEEPSEEKKEY'),
-    )
-
-    completion = client.chat.completions.create(
-    extra_headers={
-        "HTTP-Referer": "<YOUR_SITE_URL>", # Optional. Site URL for rankings on openrouter.ai.
-        "X-Title": "<YOUR_SITE_NAME>", # Optional. Site title for rankings on openrouter.ai.
-    },
-    model="deepseek/deepseek-r1:free",
-    messages=[
-        {
-            "role": "user",
-            "content": f"It's your turn as {color}. (Previous Moves): {prev}, (FEN): {message}. Without giving explanations, please state the best 5 moves for {color}, each in a new line."
-        }
-    ])
-    print(completion.choices[0].message.content)
-    return completion.choices[0].message.content
 
 app = Flask(__name__)
 CORS(app)
@@ -90,8 +70,6 @@ def submit():
     if (mes.count('/') >= 7):
         if (mod == 'gemini'):
             response = gemini(mes, color, prev)
-        elif (mod == 'deepseek'):
-            response = deepseek(mes, color, prev)
         elif (mod == 'gpt-4o-mini'):
             response = gpt(mes, mod, color, prev)
         else:
@@ -105,6 +83,35 @@ def get_data():
     data = list(collection.find({}, {'_id': 0}))  # Exclude '_id' from the result
     return jsonify(data)
 
+# @app.route('/move', methods=['GET'])
+# def get_best_move():
+#     fen = request.args.get('fen')
+#     time = request.args.get('time')
+#     if fen:
+#         stockfish.set_fen_position(fen)
+#         best_move = stockfish.get_best_move_time(time)
+#         return jsonify({
+#             'best_move': best_move
+#         })
+#     return jsonify({'error': 'FEN parameter is required'}), 400
+
+# @app.route('/eval', methods=['GET'])
+# def get_eval_move():
+#     fen = request.args.get('fen')
+#     if fen:
+#         stockfish.set_fen_position(fen)
+#         evaluation = stockfish.get_evaluation()  # Get the evaluation score
+#         evaluation_pawns = evaluation['value'] / 100 if evaluation['type'] == 'cp' else evaluation['value']
+#         return jsonify({
+#             'evaluation': {
+#                 'type': evaluation['type'],
+#                 'value': evaluation_pawns
+#             }
+#         })
+#     return jsonify({'error': 'FEN parameter is required'}), 400
+
+
+
 
 @app.route('/insert', methods=['POST'])
 def insert_data():
@@ -114,8 +121,6 @@ def insert_data():
         return jsonify({'message': 'Data inserted successfully', 'inserted_id': str(insert_result.inserted_id)}), 201
     except Exception as e:
         return jsonify({'error': str(e)}), 400
-    
-
 
 if __name__ == "__main__":
     app.run(port=5002, debug=True)
